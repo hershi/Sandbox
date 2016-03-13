@@ -93,10 +93,10 @@ std::chrono::duration<double, std::ratio<1,1>> RunTest(std::uint8_t numIteration
 			<< std::endl;
 	}
 
-	auto InSeconds = std::accumulate(durations.begin(), durations.end(), std::chrono::duration<double, std::ratio<1,1>>(0));
-	std::cout << "Total duration: " << InSeconds.count() << "; Average duration: " << InSeconds.count() / numIterations << std::endl;
+	auto TotalDuration = std::accumulate(durations.begin(), durations.end(), std::chrono::duration<double, std::ratio<1,1>>(0));
+	std::cout << "Total duration: " << TotalDuration.count() << "; Average duration: " << TotalDuration.count() / numIterations << std::endl;
 
-	return InSeconds;
+	return TotalDuration;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
