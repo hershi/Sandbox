@@ -106,24 +106,28 @@ std::chrono::duration<double, std::ratio<1,1>> RunTest(std::uint8_t numIteration
 	return TotalDuration;
 }
 
+template<typename HasherType>
+void RunComparison(std::uint8_t numIterations, std::uint16_t numElements, std::string description)
+{
+	auto boostDuration = RunTest<boost::unordered_map<Key, std::uint8_t, HasherType>>(numIterations, numElements);
+	auto stdDuration = RunTest<std::unordered_map<Key, std::uint8_t, HasherType>>(numIterations, numElements);
+
+	std::cout << "------------------------------------------------------------------------------------------------" << std::endl;
+	std::cout << "Number of iterations " << static_cast<int>(numIterations) << std::endl;
+	std::cout << "Number of elements handled per iteration " << numElements << std::endl;
+	std::cout << "std::unordered_map runtime - " << description << ": " << stdDuration.count() << std::endl;
+	std::cout << "boost::unordered_map runtime - " << description << ": " << boostDuration.count() << std::endl;
+	std::cout << "Ratio (std/boost): " << stdDuration.count() / boostDuration.count() << std::endl;
+	std::cout << "================================================================================================" << std::endl;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	std::uint8_t numIterations = 5;
-	std::uint32_t numElements = 20000;
+	std::uint32_t numElements = 10000;
 
-	auto boostDurationA = RunTest<boost::unordered_map<Key, std::uint8_t, HasherA>>(numIterations, numElements);
-	auto stdDurationA = RunTest<std::unordered_map<Key, std::uint8_t, HasherA>>(numIterations, numElements);
-	auto boostDurationB = RunTest<boost::unordered_map<Key, std::uint8_t, HasherB>>(numIterations, numElements);
-	auto stdDurationB = RunTest<std::unordered_map<Key, std::uint8_t, HasherB>>(numIterations, numElements);
-	
-	std::cout << "Number of iterations " << static_cast<int>(numIterations) << std::endl;
-	std::cout << "Number of elements handled per iteration " << numElements << std::endl;
-	std::cout << "std::unordered_map runtime - HasherA: " << stdDurationA.count() << std::endl;
-	std::cout << "boost::unordered_map runtime - HasherA: " << boostDurationA.count() << std::endl;
-	std::cout << "Ratio (boost/std): " << boostDurationA.count() / stdDurationA.count() << std::endl;
-	std::cout << "std::unordered_map runtime - HasherB: " << stdDurationB.count() << std::endl;
-	std::cout << "boost::unordered_map runtime - HasherB: " << boostDurationB.count() << std::endl;
-	std::cout << "Ratio (boost/std): " << boostDurationB.count() / stdDurationB.count() << std::endl;
+	RunComparison<HasherA>(numIterations, numElements, "HasherA");
+	RunComparison<HasherB>(numIterations, numElements, "HasherB");
 
 	return 0;
 }
